@@ -1,0 +1,47 @@
+version: '3.7'
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: udemydb
+      DB_DATABASE: influencer
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      REDIS_HOST: redis
+    ports:
+      - 8006:8000
+    volumes:
+      - .:/app
+    depends_on:
+      - udemydb
+      - redis
+    networks:
+      - uapp
+
+  udemydb:
+    image: library/mysql:8.0.20
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_DATABASE: influencer
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql_udemy_data_container:/var/lib/mysql
+    ports:
+      - 8033:3306
+    networks:
+      - uapp
+
+  redis:
+    image: redis:latest
+    networks:
+      - uapp
+
+networks:
+  uapp:
+volumes:
+  mysql_udemy_data_container:
