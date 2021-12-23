@@ -1,0 +1,41 @@
+version: '3.7'
+services:
+  users:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    #command: 'php artisan serve'
+    environment:
+      DB_HOST: udemyuserdb
+      DB_DATABASE: users
+      DB_USERNAME: root
+      DB_PASSWORD: root
+    ports:
+      - 8001:8000
+    volumes:
+      - .:/app
+    depends_on:
+      - udemyuserdb
+    networks:
+      - umuapp
+
+  udemyuserdb:
+    image: library/mysql:8.0.20
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_DATABASE: users
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql_udemy_data_container:/var/lib/mysql
+    ports:
+      - 8035:3306
+    networks:
+      - umuapp
+
+networks:
+  umuapp:
+volumes:
+  mysql_udemy_data_container:

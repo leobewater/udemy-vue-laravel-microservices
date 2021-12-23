@@ -1,0 +1,38 @@
+version: '3.7'
+services:
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: 'php artisan queue:work'
+    environment:
+      DB_HOST: udemyemaildb
+      DB_DATABASE: emails
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      #MAIL_HOST: docker.for.mac.internal
+    depends_on:
+      - udemyemaildb
+    networks:
+      - umapp
+
+  udemyemaildb:
+    image: library/mysql:8.0.20
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_DATABASE: emails
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql_udemy_data_container:/var/lib/mysql
+    ports:
+      - 8034:3306
+    networks:
+      - umapp
+
+networks:
+  umapp:
+volumes:
+  mysql_udemy_data_container:

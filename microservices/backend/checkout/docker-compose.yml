@@ -1,0 +1,54 @@
+version: '3.7'
+services:
+  checkout:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    #command: 'php artisan serve'
+    environment:
+      DB_HOST: udemycheckoutdb
+      DB_DATABASE: checkout
+      DB_USERNAME: root
+      DB_PASSWORD: root
+    ports:
+      - 8002:8000
+    volumes:
+      - .:/app
+    depends_on:
+      - udemycheckoutdb
+    networks:
+      - umuapp
+
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: 'php artisan queue:work'
+    environment:
+      DB_HOST: udemycheckoutdb
+      DB_DATABASE: checkout
+      DB_USERNAME: root
+      DB_PASSWORD: root
+    depends_on:
+      - udemycheckoutdb
+
+  udemycheckoutdb:
+    image: library/mysql:8.0.20
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_DATABASE: checkout
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql_udemy_data_container:/var/lib/mysql
+    ports:
+      - 8037:3306
+    networks:
+      - umuapp
+
+networks:
+  umuapp:
+volumes:
+  mysql_udemy_data_container:

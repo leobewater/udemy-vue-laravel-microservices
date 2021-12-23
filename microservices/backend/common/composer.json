@@ -1,0 +1,15 @@
+{
+    "name": "microservice/common",
+    "description": "This is a package for microservices",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Leo",
+            "email": "lcheung@swellbottle.com"
+        }
+    ],
+    "require": {
+        "laravel/framework": "^8.0"
+    }
+}
